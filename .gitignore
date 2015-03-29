@@ -1,0 +1,8 @@
+src/*.o
+src/*.gch
+src/text/*.o
+src/text/*.gch
+src/ncurses/*.o
+src/ncurses/*.gch
+src/gtk/ncurses/*.o
+src/gtk/*.gch
