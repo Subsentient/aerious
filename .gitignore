@@ -6,3 +6,7 @@ src/ncurses/*.o
 src/ncurses/*.gch
 src/gtk/ncurses/*.o
 src/gtk/*.gch
+src/substrings/*.a
+src/substrings/*.o
+src/substrings/*.so*
+src/substrings/*.gch
