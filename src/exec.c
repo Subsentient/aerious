@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "substrings/substrings.h"
@@ -16,6 +17,14 @@ pid_t Exec_SpawnProcess(const char *ExecuteString)
 	//Or if we're the parent.
 	else if (PID > 0) return PID;
 	
+	///If we are going to need a shell
+	if (strpbrk(ExecuteString, "&^$#@!()*%{}`~+|\\<>?;:'[]\"\t") != NULL)
+	{ //We will need the shell for this
+		execlp("/bin/sh", "sh", "-c", ExecuteString, NULL);
+		_exit(97); //Failed to exec
+	}
+	
+	///If we don't need to call the shell
 	int NumSpaces = 1;
 	const char *Worker = ExecuteString;
 	char **ArgV = NULL;
