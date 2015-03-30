@@ -47,3 +47,17 @@ pid_t Exec_SpawnProcess(const char *ExecuteString)
 	
 	_exit(97); //We'll use 97 to indicate execvp() failure
 }
+
+bool Exec_WaitForExit(const pid_t PID, const unsigned Delay, int *ExitStatus)
+{ //Delay is in tenths of a second.
+	usleep(Delay * 100000);
+	
+	int Temp;
+	if (waitpid(PID, &Temp, WNOHANG) > 0)
+	{
+		*ExitStatus = WEXITSTATUS(Temp);
+		return true;
+	}
+	
+	return false; //Our value that says this is not a normal exit.
+}
