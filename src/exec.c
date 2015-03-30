@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include "substrings/substrings.h"
 
-int Exec_SpawnProcess(const char *ExecuteString)
+pid_t Exec_SpawnProcess(const char *ExecuteString)
 { //Executes the command specified via fork, then returns the child PID.
 	if (!ExecuteString || !*ExecuteString) return -1;
 	
@@ -16,7 +16,7 @@ int Exec_SpawnProcess(const char *ExecuteString)
 	//Or if we're the parent.
 	else if (PID > 0) return PID;
 	
-	int NumSpaces = 0;
+	int NumSpaces = 1;
 	const char *Worker = ExecuteString;
 	char **ArgV = NULL;
 	
