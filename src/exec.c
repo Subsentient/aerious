@@ -50,13 +50,17 @@ pid_t Exec_SpawnProcess(const char *ExecuteString)
 
 bool Exec_WaitForExit(const pid_t PID, const unsigned Delay, int *ExitStatus)
 { //Delay is in tenths of a second.
-	usleep(Delay * 100000);
 	
-	int Temp;
-	if (waitpid(PID, &Temp, WNOHANG) > 0)
-	{
-		*ExitStatus = WEXITSTATUS(Temp);
-		return true;
+	for (int Inc = 0; Inc < 100; ++Inc)
+	{ //Divide the delay into 100 chunks.
+		usleep(Delay * 1000);
+	
+		int Temp;
+		if (waitpid(PID, &Temp, WNOHANG) > 0)
+		{
+			*ExitStatus = WEXITSTATUS(Temp);
+			return true;
+		}
 	}
 	
 	return false; //Our value that says this is not a normal exit.
