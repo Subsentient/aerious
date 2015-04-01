@@ -7,7 +7,6 @@
 
 struct wireless_scan *Wifi_GetNetworks(const char *Interface)
 {
-	
 	iwrange Range;
 	int Socket = iw_sockets_open();
 	
@@ -22,5 +21,20 @@ struct wireless_scan *Wifi_GetNetworks(const char *Interface)
 		return NULL;
 	}
 	
+	iw_sockets_close(Socket);
+	
+	//Gives us a linked list traversed with ->next
 	return Head.result;
+}
+
+struct wireless_config Wifi_GetStatus(const char *const Interface)
+{
+	struct wireless_config RetVal;
+	memset(&RetVal, 0, sizeof RetVal);
+	
+	int Socket = iw_sockets_open();
+	//Whether or not it fails we just return the structure.
+	iw_get_basic_config(Socket, Interface, &RetVal);
+	
+	return RetVal;
 }

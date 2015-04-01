@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-char *NetCmds[] = { "ifconfig %s up", "ifconfig %s down", "dhclient %s", "iwconfig %s" };
+char *NetCmds[] = { "ifconfig %s up", "ifconfig %s down", "dhclient %s" };
 
 bool Config_ReadConfig(void)
 {
