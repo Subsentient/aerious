@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "exec.h"
 #include "wifi.h"
 
 struct wireless_scan *Wifi_GetNetworks(const char *Interface)
@@ -37,4 +39,18 @@ struct wireless_config Wifi_GetStatus(const char *const Interface)
 	iw_get_basic_config(Socket, Interface, &RetVal);
 	
 	return RetVal;
+}
+
+bool Wifi_SetESSID(const char *const Interface, const char *const ESSID)
+{
+	char Buf[2048];
+	
+	snprintf(Buf, sizeof Buf, "iwconfig %s essid \"%s\"", Interface, ESSID);
+	
+	pid_t PID = Exec_SpawnProcess(Buf);
+	
+	int ExitStatus;
+	if (!Exec_WaitForExit(PID, 100 /*10 secs*/, &ExitStatus)) return false;
+	
+	return !ExitStatus;
 }
