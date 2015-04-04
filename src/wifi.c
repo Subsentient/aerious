@@ -54,3 +54,39 @@ bool Wifi_SetESSID(const char *const Interface, const char *const ESSID)
 	
 	return !ExitStatus;
 }
+
+bool Wifi_Auth_WEP(const char *Interface, const char *Key)
+{
+	char Buf[1024];
+	
+	//Set the key
+	snprintf(Buf, sizeof Buf, "iwconfig %s key %s", Interface, Key);
+	
+	pid_t PID = Exec_SpawnProcess(Buf);
+	
+	int ExitStatus;
+	if (!Exec_WaitForExit(PID, 100, &ExitStatus) || ExitStatus != 0) return false;
+	
+	//Now turn on the security
+	snprintf(Buf, sizeof Buf, "iwconfig %s enc on", Interface);
+	
+	PID = Exec_SpawnProcess(Buf);
+	
+	if (!Exec_WaitForExit(PID, 100, &ExitStatus) || ExitStatus != 0) return false;
+	
+	return true;
+}
+	
+bool Wifi_Auth_WPA(const char *Interface, const char *ESSID, const char *Passphrase)
+{
+	char Buf[2048]; //Bigger so we can be sure to fit ridiculous passwords
+	
+	snprintf(Buf, sizeof Buf, "wpa_passphrase \"%s\" \"%s\" | wpa_supplicant -B -i %s -c /dev/stdin", ESSID, Passphrase, Interface);
+	
+	pid_t PID = Exec_SpawnProcess(Buf);
+	
+	int ExitStatus;
+	if (!Exec_WaitForExit(PID, 450, &ExitStatus)) return false;
+	
+	return !ExitStatus;
+}
